@@ -1,0 +1,10 @@
+[package]
+name = "error_handling"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+# abort on panic instead of unwind
+[profile.release]
+panic = 'abort'
