@@ -28,6 +28,10 @@ pub fn add_two(a: usize) -> usize {
     a + 2
 }
 
+fn internal_adder(left: usize, right: usize) -> usize {
+    left + right
+}
+
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
@@ -35,6 +39,12 @@ pub fn add(left: u64, right: u64) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
 
     #[test]
     #[should_panic]
