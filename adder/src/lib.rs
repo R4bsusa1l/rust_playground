@@ -99,3 +99,24 @@ mod tests {
         }
     }
 }
+
+// Some command line options go to cargo test, and some go to the resultant test binary. 
+// To separate these two types of arguments, you list the arguments that go to cargo test 
+// followed by the separator -- and then the ones that go to the test binary. 
+// Running cargo test --help displays the options you can use with cargo test, 
+// and running cargo test -- --help displays the options you can use after the separator
+
+// $ cargo test -- --test-threads=1     -> this will run all tests in a single thread   -> TE is by default multithreaded
+// this means that tests that interfere with each other can cause problems. Thus we make sure all tests are 
+// executed sequentially.
+// $ cargo test -- --ignored           -> this will run all tests that are marked as ignored
+// $ cargo test -- --show-output       -> this will show the output of all tests    
+// function output of println!() and eprintln!() for example is then visible in the test-report
+// $ cargo test it_works                -> this will run only the test it_works
+// $ cargo test it                      -> this will run the tests it_works and it_adds_two. 
+// this is the standard way to specify 2 tests to run by name. 
+// We take the common prefix of the test names and the compiler will run any test that matches the prefix.
+
+// After #[test], we add the #[ignore] line to the test we want to exclude, in this case it_adds_two. 
+// Now when we run our tests, it_works runs, but it_adds_two doesn’t
+// cargo test it -- --include-ignored   -> will run both it_works and it_adds_two again as ignored tessts are
