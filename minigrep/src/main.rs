@@ -14,4 +14,4 @@ fn main() {
         eprintln!("Application error: {e}");
         process::exit(1);
     }
-} 
+}   
