@@ -4,7 +4,7 @@ use minigrep::Config;
 
 fn main() {
 
-    let config = Config::build(env:args()).unwrap_or_else(|err| {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {err}");          // eprintln! is used to print to stderr
         process::exit(1);
     });
