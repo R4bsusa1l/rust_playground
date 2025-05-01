@@ -1,21 +1,36 @@
+//! # minigrep
+//!
+//! `minigrep` is a utility for searching a string in a file. 
+//! It is a simple command-line tool that takes a query string and a file path as arguments 
+//! and prints the lines in the file that contain the query string. 
+//! It also supports case-insensitive search based on an environment variable.
+//! 
+
+
 use std::error::Error;
 use std::fs;
 use std::env;
 
+/// Config struct entails query-string(query), location to search(file_path) and ignore_case.
 pub struct Config {
     pub query: String,
     pub file_path: String,
     pub ignore_case: bool,
 }
 
+/// Config implementation: read command line arguments and set up the configuration.
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next(); // Skip the first argument (the program name)
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+        let file_path = match args.next() {
+            Some (arg) => arg,
+            None => return Err("Didn't recieve a file or location"),
+        };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
@@ -27,6 +42,7 @@ impl Config {
     }
 }
 
+/// run function: takes a Config object and performs the search operation.
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
@@ -43,32 +59,18 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/// search function: takes a query string and file contents, and returns lines that contain the query.
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents.lines().filter(|line| line.contains(query)).collect()
 }
 
+/// search_case_insensitive function: takes a query string and file contents,
+/// and returns lines that contain the query, ignoring case.
 pub fn search_case_insensitive<'a>(
     query: &str,
     contents: &'a str,
 ) -> Vec<&'a str> {
-    let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents.lines().filter(|line| line.to_lowercase().contains(&query.to_lowercase())).collect()
 }
 
 #[cfg(test)]
