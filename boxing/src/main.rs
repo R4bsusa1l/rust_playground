@@ -1,6 +1,39 @@
 use crate::List::{Cons, Nil};
 use std::ops::Deref;
 
+
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}
+
+
+// -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+
 struct MyBox<T>(T);
 
 impl<T> Deref for MyBox<T> {
@@ -25,7 +58,7 @@ enum List {
                                 // to storing a reference to the list (pointer)
 }
 
-fn main() {
+fn main1() {
     //let list = Cons(1, Cons(2, Cons(3, Nil)));          // alledgedly adaptation from lisp
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil)))))); // we need to box the inner lists
     let x = 5;
