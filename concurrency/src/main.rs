@@ -55,3 +55,15 @@ fn alternation_with_wait_for_execution() {
     handle.join().unwrap();
 }
 
+use std::thread;
+
+fn use_thread_with_closure_values() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}
+
